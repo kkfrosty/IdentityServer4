@@ -67,6 +67,18 @@ To add support for OpenID Connect authentication to the MVC application, you fir
             options.ResponseType = "code";
 
             options.SaveTokens = true;
+            
+             /* The instructions as do not work.  A Invalid redirect_uri error will occur.  In the logs
+              You will see a null RedirectUri.  After searching the best thing I could find was
+             following SO issue which indicates the code below to specify what the redirect URI should be.
+             They must match identically to the allowed RedirectUri's defined in Client on the IDS.
+                    //https://stackoverflow.com/questions/35976870/how-to-set-redirect-uri-parameter-on-openidconnectoptions-for-asp-net-core#
+                    */
+                    options.Events.OnRedirectToIdentityProvider = async n =>
+                    {
+                        n.ProtocolMessage.RedirectUri = "http://localhost/identitycore/signin-oidc";
+                        await Task.FromResult(0);
+                    };
         });
 
 ``AddAuthentication`` adds the authentication services to DI.
